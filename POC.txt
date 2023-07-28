@@ -1,0 +1,168 @@
+<dependencies>
+    <!-- Spring Boot Starter -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+
+    <!-- Spring Data JDBC with Oracle -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jdbc</artifactId>
+    </dependency>
+
+    <!-- Oracle JDBC Driver -->
+    <dependency>
+        <groupId>com.oracle.database.jdbc</groupId>
+        <artifactId>ojdbc8</artifactId>
+        <version>21.1.0.0</version>
+    </dependency>
+
+    <!-- Apache Commons CSV -->
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>1.9</version>
+    </dependency>
+</dependencies>
+
+
+--------------------
+
+# SIT Configuration
+spring.profiles.active=sit
+
+spring.datasource.sit.url=jdbc:oracle:thin:@SIT_DB_URL:1521/SIT_SID
+spring.datasource.sit.username=sit_username
+spring.datasource.sit.password=sit_password
+
+# UAT Configuration
+spring.datasource.uat.url=jdbc:oracle:thin:@UAT_DB_URL:1521/UAT_SID
+spring.datasource.uat.username=uat_username
+spring.datasource.uat.password=uat_password
+
+# PROD Configuration
+spring.datasource.prod.url=jdbc:oracle:thin:@PROD_DB_URL:1521/PROD_SID
+spring.datasource.prod.username=prod_username
+spring.datasource.prod.password=prod_password
+
+--------------------
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
+import javax.sql.DataSource;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+@SpringBootApplication
+@EnableConfigurationProperties
+@EnableJdbcRepositories
+public class OracleDBConnectionApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(OracleDBConnectionApplication.class, args);
+    }
+}
+
+@Configuration
+class DataSourceConfig {
+
+    @Bean
+    @Profile("sit")
+    @ConfigurationProperties("spring.datasource.sit")
+    public DataSource sitDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean
+    @Profile("uat")
+    @ConfigurationProperties("spring.datasource.uat")
+    public DataSource uatDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean
+    @Profile("prod")
+    @ConfigurationProperties("spring.datasource.prod")
+    public DataSource prodDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+}
+
+@Service
+class DatabaseService {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public DatabaseService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public void runCustomQueryAndGenerateCSV(String sqlQuery, String csvFilePath) {
+        jdbcTemplate.query(sqlQuery, this::mapResultSetToCSV);
+    }
+
+    private void mapResultSetToCSV(ResultSet rs) throws SQLException, IOException {
+        try (FileWriter writer = new FileWriter("output.csv")) {
+            while (rs.next()) {
+                // Assuming you have specific columns, adjust accordingly
+                String column1 = rs.getString("column1");
+                String column2 = rs.getString("column2");
+                // ... (map all columns as needed)
+
+                // Write to CSV
+                writer.append(column1).append(",").append(column2).append("\n");
+            }
+        }
+    }
+}
+
+
+--------------------
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DatabaseQueryRunner implements CommandLineRunner {
+
+    @Autowired
+    private DatabaseService databaseService;
+
+    @Value("${output.csv.filepath}")
+    private String csvFilePath;
+
+    @Override
+    public void run(String... args) throws Exception {
+        // Customize the SQL query based on your requirements
+        String customQuery = "SELECT column1, column2 FROM your_table_name WHERE condition;";
+
+        // Call the service method to run the query and generate CSV
+        databaseService.runCustomQueryAndGenerateCSV(customQuery, csvFilePath);
+    }
+}
+
+
+
+-------------------------
+
+java -jar -Dspring.profiles.active=PROFILE_NAME your-application.jar
+
