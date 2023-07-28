@@ -166,3 +166,38 @@ public class DatabaseQueryRunner implements CommandLineRunner {
 
 java -jar -Dspring.profiles.active=PROFILE_NAME your-application.jar
 
+------------------
+
+spring:
+  profiles:
+    active: sit
+
+# SIT Configuration
+---
+spring:
+  profiles: sit
+  datasource:
+    url: jdbc:oracle:thin:@SIT_DB_URL:1521/SIT_SID
+    username: sit_username
+    password: sit_password
+
+# UAT Configuration
+---
+spring:
+  profiles: uat
+  datasource:
+    url: jdbc:oracle:thin:@UAT_DB_URL:1521/UAT_SID
+    username: uat_username
+    password: uat_password
+
+# PROD Configuration
+---
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:oracle:thin:@PROD_DB_URL:1521/PROD_SID
+    username: prod_username
+    password: prod_password
+
+
+------------------
