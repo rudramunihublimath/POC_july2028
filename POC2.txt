@@ -1,0 +1,204 @@
+For SIT profile (application-sit.properties):
+spring.datasource.url=jdbc:oracle:thin:@//localhost:1521/sit
+spring.datasource.username=sit_username
+spring.datasource.password=sit_password
+
+
+For UAT profile (application-uat.properties):
+spring.datasource.url=jdbc:oracle:thin:@//uat-db-host:1521/uat
+spring.datasource.username=uat_username
+spring.datasource.password=uat_password
+
+
+-------
+
+public class MyData {
+    // Define fields as per your SELECT query result columns
+    private Long id;
+    private String name;
+    // Add more fields as needed
+
+    // Constructors, getters, and setters
+}
+
+
+------------
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface MyDataRepository extends JpaRepository<MyData, Long> {
+    @Query(nativeQuery = true, value = "SELECT id, name FROM your_table WHERE condition = :condition")
+    List<MyData> getDataByCustomCondition(@Param("condition") String condition);
+}
+
+
+----------
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyDataService {
+    private final MyDataRepository myDataRepository;
+
+    @Autowired
+    public MyDataService(MyDataRepository myDataRepository) {
+        this.myDataRepository = myDataRepository;
+    }
+
+    public List<MyData> getDataByCustomCondition(String condition) {
+        return myDataRepository.getDataByCustomCondition(condition);
+    }
+}
+
+
+-------------
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MyDataController {
+    private final MyDataService myDataService;
+
+    @Autowired
+    public MyDataController(MyDataService myDataService) {
+        this.myDataService = myDataService;
+    }
+
+    @GetMapping("/getData")
+    public List<MyData> getDataByCustomCondition(@RequestParam String condition) {
+        return myDataService.getDataByCustomCondition(condition);
+    }
+}
+
+
+----------------
+
+Create a single application.yml file with configurations for all three profiles:
+
+
+spring:
+  profiles:
+    active: default  # This will be the default profile if no active profile is specified
+
+---
+
+spring:
+  profiles: sit
+
+datasource:
+  url: jdbc:oracle:thin:@//localhost:1521/sit
+  username: sit_username
+  password: sit_password
+
+---
+
+spring:
+  profiles: uat
+
+datasource:
+  url: jdbc:oracle:thin:@//uat-db-host:1521/uat
+  username: uat_username
+  password: uat_password
+
+---
+
+spring:
+  profiles: prod
+
+datasource:
+  url: jdbc:oracle:thin:@//prod-db-host:1521/prod
+  username: prod_username
+  password: prod_password
+
+
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+
+
+java -jar your-application.jar --spring.profiles.active=sit
+
+spring.profiles.active=sit
+
+---------
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>com.example</groupId>
+    <artifactId>your-application</artifactId>
+    <version>1.0.0</version>
+    <name>Your Application Name</name>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.5</version> <!-- Replace with the latest version of Spring Boot -->
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <java.version>11</java.version> <!-- Specify the Java version you are using -->
+        <spring.boot.version>2.5.5</spring.boot.version> <!-- Replace with the latest Spring Boot version -->
+        <oracle.jdbc.version>19.3.0.0</oracle.jdbc.version> <!-- Replace with the appropriate Oracle JDBC driver version -->
+    </properties>
+
+    <dependencies>
+        <!-- Spring Boot Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Oracle JDBC Driver -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc10</artifactId> <!-- Replace with the appropriate Oracle JDBC driver artifactId -->
+            <version>${oracle.jdbc.version}</version>
+        </dependency>
+
+        <!-- Add other dependencies here as needed -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Maven Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version> <!-- Replace with the latest version of the Maven Compiler Plugin -->
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Surefire Plugin (for running tests) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version> <!-- Replace with the latest version of the Maven Surefire Plugin -->
+            </plugin>
+
+            <!-- Spring Boot Maven Plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
