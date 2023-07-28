@@ -202,3 +202,25 @@ spring.profiles.active=sit
     </build>
 
 </project>
+
+
+
+-------------
+
+# Database Configuration
+spring.datasource.url=jdbc:oracle:thin:@//your-oracle-host:your-port/your-database
+spring.datasource.username=your-username
+spring.datasource.password=your-password
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
+# Hibernate Configuration
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.show-sql=true
+
+# Additional Spring Boot Configurations (optional)
+spring.application.name=YourApplicationName
+server.port=8080
+
+
+-------------
