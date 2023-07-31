@@ -1,0 +1,60 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+// ... (same Mydata and MydataOut classes as before)
+
+public class DatabaseRecords {
+    public static void main(String[] args) {
+        // ... (same varNames ArrayList as before)
+
+        // Process the records and build the output as List of MydataOut objects
+        List<MydataOut> outputList = new ArrayList<>();
+        Map<String, Map<String, String>> channelData = new HashMap<>();
+
+        for (Mydata data : varNames) {
+            String varName = data.getVarName();
+            String value = data.getValue();
+
+            String[] parts = varName.split("\\.");
+            if (parts.length == 3) {
+                String channel = parts[1].substring(0, parts[1].lastIndexOf("_")).toUpperCase() + parts[1].substring(parts[1].lastIndexOf("_")).toLowerCase();
+                String subChannel = parts[2].toLowerCase();
+
+                channelData.putIfAbsent(channel, new HashMap<>());
+                channelData.get(channel).put(subChannel, value);
+            }
+        }
+
+        for (Map.Entry<String, Map<String, String>> entry : channelData.entrySet()) {
+            String channel = entry.getKey();
+            Map<String, String> channelValues = entry.getValue();
+
+            String A = channelValues.getOrDefault("A", "");
+            String B = channelValues.getOrDefault("B", "");
+            String C = channelValues.getOrDefault("C", "");
+            String D = channelValues.getOrDefault("D", "");
+            String E = channelValues.getOrDefault("E", "");
+            String F = channelValues.getOrDefault("F", "");
+
+            outputList.add(new MydataOut(channel, A, B, C, D, E, F));
+        }
+
+        // Print the header
+        System.out.println("\"Channel\"               , A ,   B,    C,   D    ,  E,     F");
+
+        // Print the data
+        for (MydataOut mydataOut : outputList) {
+            String channel = mydataOut.getChannel();
+            String A = mydataOut.getA();
+            String B = mydataOut.getB();
+            String C = mydataOut.getC();
+            String D = mydataOut.getD();
+            String E = mydataOut.getE();
+            String F = mydataOut.getF();
+
+            System.out.printf("%-25s, %4s, %4s, %6s, %6s, %4s, %6s%n", channel, A, B, C, D, E, F);
+        }
+    }
+}
