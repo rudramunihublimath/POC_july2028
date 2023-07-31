@@ -33,18 +33,19 @@ public class DatabaseRecords {
         varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate1.D", "math"));
         varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate1.E", "pune"));
         varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate1.F", "meena"));
+		varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.A", "wag"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.B", "oli"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.C", "tempe"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.D", "fdfd"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.E", "daa"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.F", "papa"));
         varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.A", "shweta"));
         varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.B", "sware"));
         varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.C", "ved"));
         varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.D", "ppu"));
         varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.E", "sola"));
         varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.F", "pur"));
-        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.A", "wag"));
-        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.B", "oli"));
-        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.C", "tempe"));
-        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.D", "fdfd"));
-        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.E", "daa"));
-        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.F", "papa"));
+    
 
         // Process the records and build the output
         Map<String, Map<String, String>> channelData = new HashMap<>();
@@ -82,7 +83,17 @@ public class DatabaseRecords {
 }
 
 
-Channel		A	B	C	D	E	F	
-duplicate1	123	rudra	hub	math	pune	meena	
-duplicate2	shweta	sware	ved	ppu	sola	pur	
-duplicate3	wag	oli	tempe	fdfd	daa	papa	
+Channel						A	B	C	D	E	F	
+usqcds36_cdds_duplicate1	123	rudra	hub	math	pune	meena	
+usqcds36_cdds_duplicate2	shweta	sware	ved	ppu	sola	pur	
+usqcds36_cdds_duplicate3	wag	oli	tempe	fdfd	daa	papa	
+
+
+usqcds36_cdds_duplicate1
+usqcds36_cdds_duplicate10
+usqcds36_cdds_duplicate31
+
+Write java code to substract last digit and give me as output lieke below
+1
+10
+31
