@@ -1,0 +1,59 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+class Mydata {
+    // ... Same as before ...
+}
+
+class MydataOut {
+    // ... Same as before ...
+}
+
+public class DatabaseRecords {
+    public static void main(String[] args) {
+        // ... Same as before ...
+
+        // Process the records and build the output as List of MydataOut objects
+        List<MydataOut> outputList = new ArrayList<>();
+        Map<String, Map<String, String>> channelData = new HashMap<>();
+
+        // ... Same as before ...
+
+        for (Map.Entry<String, Map<String, String>> entry : channelData.entrySet()) {
+            // ... Same as before ...
+        }
+
+        // Sort the outputList based on the channel name using Java 8 features and custom comparator
+        List<MydataOut> sortedOutputList = outputList.stream()
+                .sorted(Comparator.comparing(DatabaseRecords::getNumericPartOfChannel)
+                        .thenComparing(MydataOut::getChannel))
+                .collect(Collectors.toList());
+
+        // Print the header
+        System.out.println("Channel,A,B,C,D,E,F");
+
+        // Print the data
+        for (MydataOut mydataOut : sortedOutputList) {
+            System.out.println(
+                    mydataOut.getChannel() + ","
+                            + mydataOut.getA() + ","
+                            + mydataOut.getB() + ","
+                            + mydataOut.getC() + ","
+                            + mydataOut.getD() + ","
+                            + mydataOut.getE() + ","
+                            + mydataOut.getF()
+            );
+        }
+    }
+
+    // Custom comparator to extract the numeric part of the channel names and sort accordingly
+    private static int getNumericPartOfChannel(MydataOut mydataOut) {
+        String channel = mydataOut.getChannel();
+        String numericPart = channel.substring("duplicate".length());
+        return Integer.parseInt(numericPart);
+    }
+}
