@@ -1,0 +1,21 @@
+public class LastDigitExtractor {
+    public static void main(String[] args) {
+        String[] inputStrings = {"usqcds36_cdds_duplicate1", "usqcds36_cdds_duplicate10", "usqcds36_cdds_duplicate31"};
+
+        for (String input : inputStrings) {
+            String lastDigit = extractLastDigit(input);
+            System.out.println(lastDigit);
+        }
+    }
+
+    private static String extractLastDigit(String input) {
+        int length = input.length();
+        int lastIndex = length - 1;
+
+        while (lastIndex >= 0 && !Character.isDigit(input.charAt(lastIndex))) {
+            lastIndex--;
+        }
+
+        return input.substring(lastIndex);
+    }
+}
