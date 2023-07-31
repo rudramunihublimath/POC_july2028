@@ -1,0 +1,88 @@
+public class Mydata {
+    private String varName;
+    private String value;
+
+    public Mydata(String varName, String value) {
+        this.varName = varName;
+        this.value = value;
+    }
+
+    public String getVarName() {
+        return varName;
+    }
+
+    public String getValue() {
+        return value;
+    }
+}
+
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class DatabaseRecords {
+    public static void main(String[] args) {
+        // Given ArrayList of Mydata objects
+        ArrayList<Mydata> varNames = new ArrayList<>();
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate1.A", "123"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate1.B", "rudra"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate1.C", "hub"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate1.D", "math"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate1.E", "pune"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate1.F", "meena"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.A", "shweta"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.B", "sware"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.C", "ved"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.D", "ppu"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.E", "sola"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate2.F", "pur"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.A", "wag"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.B", "oli"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.C", "tempe"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.D", "fdfd"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.E", "daa"));
+        varNames.add(new Mydata("$mq clint version.usqcds36_cdds_duplicate3.F", "papa"));
+
+        // Process the records and build the output
+        Map<String, Map<String, String>> channelData = new HashMap<>();
+        for (Mydata data : varNames) {
+            String varName = data.getVarName();
+            String value = data.getValue();
+
+            String[] parts = varName.split("\\.");
+            if (parts.length == 3) {
+                String channel = parts[1].substring(parts[1].lastIndexOf("_") + 1);
+
+                channelData.putIfAbsent(channel, new HashMap<>());
+                channelData.get(channel).put(parts[2], value);
+            }
+        }
+
+        // Print the header
+        System.out.println("Channel\t\tA\tB\tC\tD\tE\tF");
+
+        // Print the data
+        for (Map.Entry<String, Map<String, String>> entry : channelData.entrySet()) {
+            String channel = entry.getKey();
+            Map<String, String> channelValues = entry.getValue();
+
+            System.out.print(channel + "\t\t");
+            System.out.print(channelValues.getOrDefault("A", "") + "\t");
+            System.out.print(channelValues.getOrDefault("B", "") + "\t");
+            System.out.print(channelValues.getOrDefault("C", "") + "\t");
+            System.out.print(channelValues.getOrDefault("D", "") + "\t");
+            System.out.print(channelValues.getOrDefault("E", "") + "\t");
+            System.out.print(channelValues.getOrDefault("F", "") + "\t");
+            System.out.println();
+        }
+    }
+}
+
+
+Channel		A	B	C	D	E	F	
+duplicate1	123	rudra	hub	math	pune	meena	
+duplicate2	shweta	sware	ved	ppu	sola	pur	
+duplicate3	wag	oli	tempe	fdfd	daa	papa	
