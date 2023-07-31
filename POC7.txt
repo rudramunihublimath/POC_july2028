@@ -1,31 +1,31 @@
-public class LastDigitExtractor {
+public class NumericPartExtractor {
     public static void main(String[] args) {
         String[] inputStrings = {
             "usqcds36_cdds_duplicate1",
             "usqcds36_cdds_duplicate10",
-            "usqcds36_cdds_duplicate31"
+            "usqcds36_cdds_duplicatedfd31"
         };
 
         for (String input : inputStrings) {
-            int lastDigit = extractLastDigit(input);
-            System.out.println(lastDigit);
+            String numericPart = extractNumericPart(input);
+            System.out.println(numericPart);
         }
     }
 
-    public static int extractLastDigit(String input) {
-        int lastDigit = 0;
+    public static String extractNumericPart(String input) {
+        StringBuilder numericPartBuilder = new StringBuilder();
 
-        // Find the position of the last digit in the input string
-        int lastIndex = input.length() - 1;
-        while (lastIndex >= 0 && !Character.isDigit(input.charAt(lastIndex))) {
-            lastIndex--;
+        for (int i = input.length() - 1; i >= 0; i--) {
+            char ch = input.charAt(i);
+            if (Character.isDigit(ch)) {
+                numericPartBuilder.insert(0, ch);
+            } else if (numericPartBuilder.length() > 0) {
+                // If we have already encountered digits and the current character is not a digit,
+                // break the loop to stop extracting the numeric part.
+                break;
+            }
         }
 
-        if (lastIndex >= 0) {
-            // Extract the last digit from the input string
-            lastDigit = Character.getNumericValue(input.charAt(lastIndex));
-        }
-
-        return lastDigit;
+        return numericPartBuilder.toString();
     }
 }
