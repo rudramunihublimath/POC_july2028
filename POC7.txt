@@ -29,3 +29,10 @@ public class NumericPartExtractor {
         return numericPartBuilder.toString();
     }
 }
+
+
+----
+
+curl -X GET -G "http://example.com/service" --data-urlencode "param1=value1" --data-urlencode "param2=value2"
+
+
