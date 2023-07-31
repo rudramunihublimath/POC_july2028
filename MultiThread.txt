@@ -1,0 +1,113 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+
+class Mydata {
+    // ... Same as before ...
+}
+
+class MydataOut {
+    // ... Same as before ...
+}
+
+public class DatabaseRecords {
+    public static void main(String[] args) {
+        // Given ArrayList of Mydata objects with 1 lakh records
+        List<Mydata> varNames = new ArrayList<>();
+        // ... Add 1 lakh records ...
+
+        // Specify the number of threads to use for parallel processing
+        int numThreads = Runtime.getRuntime().availableProcessors(); // Use available processor cores
+
+        // Process the records and build the output as List of MydataOut objects using multi-threading
+        List<MydataOut> outputList = processRecordsInParallel(varNames, numThreads);
+
+        // Sort the outputList based on the channel name using Java 8 features and custom comparator
+        List<MydataOut> sortedOutputList = outputList.stream()
+                .sorted(Comparator.comparing(DatabaseRecords::getNumericPartOfChannel)
+                        .thenComparing(Comparator.comparing(MydataOut::getChannel)))
+                .collect(Collectors.toList());
+
+        // Print the header
+        System.out.println("Channel,A,B,C,D,E,F");
+
+        // Print the data
+        for (MydataOut mydataOut : sortedOutputList) {
+            System.out.println(
+                    mydataOut.getChannel() + ","
+                            + mydataOut.getA() + ","
+                            + mydataOut.getB() + ","
+                            + mydataOut.getC() + ","
+                            + mydataOut.getD() + ","
+                            + mydataOut.getE() + ","
+                            + mydataOut.getF()
+            );
+        }
+    }
+
+    // Custom comparator and getNumericPartOfChannel method remain the same as before...
+
+    private static List<MydataOut> processRecordsInParallel(List<Mydata> varNames, int numThreads) {
+        List<List<Mydata>> chunks = splitIntoChunks(varNames, numThreads);
+
+        ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+        List<Future<List<MydataOut>>> futures = new ArrayList<>();
+
+        for (List<Mydata> chunk : chunks) {
+            Callable<List<MydataOut>> task = () -> processChunk(chunk);
+            Future<List<MydataOut>> future = executorService.submit(task);
+            futures.add(future);
+        }
+
+        List<MydataOut> outputList = new ArrayList<>();
+
+        for (Future<List<MydataOut>> future : futures) {
+            try {
+                outputList.addAll(future.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        executorService.shutdown();
+
+        return outputList;
+    }
+
+    private static List<List<Mydata>> splitIntoChunks(List<Mydata> varNames, int numChunks) {
+        int chunkSize = (int) Math.ceil(varNames.size() / (double) numChunks);
+
+        List<List<Mydata>> chunks = new ArrayList<>();
+
+        for (int i = 0; i < varNames.size(); i += chunkSize) {
+            int end = Math.min(i + chunkSize, varNames.size());
+            chunks.add(varNames.subList(i, end));
+        }
+
+        return chunks;
+    }
+
+    private static List<MydataOut> processChunk(List<Mydata> chunk) {
+        // Similar processing as before to build MydataOut objects
+        // ... Same code as before ...
+
+        return outputList;
+    }
+}
+
+
+-------------
+
+In this updated code, we split the 1 lakh records into smaller chunks, and each chunk is processed on a separate thread using a ExecutorService. The number of threads used for parallel processing is determined by the numThreads variable, which is set to the number of available processor cores.
+
+Please note that the processChunk method represents the processing logic for each chunk, which is similar to the original code that builds MydataOut objects. You need to implement the logic inside processChunk according to your actual data processing needs.
+
+Using multi-threading should significantly improve the processing time for a large number of records. However, keep in mind that the actual performance improvement may vary depending on your machine's hardware and the nature of the data processing tasks.
