@@ -1,0 +1,65 @@
+"usqcds36_cdds_duplicatedfd41"
+"usqcds36_cdds_duplicate10",
+"usqcds36_cdds_duplicate1",
+"usqcds36_cdds_duplicatedfd31"
+"usqcds36_cdds_duplicate1"
+
+------
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class CustomString {
+    private String value;
+
+    public CustomString(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+
+    // Custom comparator to sort based on the numerical part of the string
+    public static class CustomComparator implements Comparator<CustomString> {
+        @Override
+        public int compare(CustomString s1, CustomString s2) {
+            // Extract the numerical part from the strings
+            int num1 = Integer.parseInt(s1.getValue().replaceAll("[^0-9]", ""));
+            int num2 = Integer.parseInt(s2.getValue().replaceAll("[^0-9]", ""));
+            // Compare the numerical parts
+            return Integer.compare(num1, num2);
+        }
+    }
+
+    public static void main(String[] args) {
+        // Input data
+        String[] inputData = {
+            "usqcds36_cdds_duplicatedfd41",
+            "usqcds36_cdds_duplicate10",
+            "usqcds36_cdds_duplicate1",
+            "usqcds36_cdds_duplicatedfd31",
+            "usqcds36_cdds_duplicate1"
+        };
+
+        List<CustomString> customStringList = new ArrayList<>();
+        for (String data : inputData) {
+            customStringList.add(new CustomString(data));
+        }
+
+        // Sort using the custom comparator
+        Collections.sort(customStringList, new CustomComparator());
+
+        // Print the sorted list
+        for (CustomString customString : customStringList) {
+            System.out.println(customString.getValue());
+        }
+    }
+}
