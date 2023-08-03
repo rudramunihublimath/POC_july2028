@@ -31,24 +31,20 @@ SELECT
         ELSE o.container
     END AS BROKER,
     CASE 
-        WHEN INSTR(o.container, '|', 1, 1) > 0 THEN 
+        WHEN REGEXP_COUNT(o.container, '\|') >= 1 THEN 
             CASE 
-                WHEN INSTR(o.container, '|', 1, 2) > 0 THEN 
-                    SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
-                ELSE
-                    SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
+                WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN 
+                    REGEXP_SUBSTR(o.container, '[^|]+', 1, 2)
             END
     END AS EG,
     CASE 
-        WHEN INSTR(o.container, '|', 1, 2) > 0 THEN 
-            CASE 
-                WHEN INSTR(o.container, '|', 1, 3) > 0 THEN 
-                    SUBSTR(o.container, INSTR(o.container, '|', 1, 3) + 1)
-                ELSE
-                    SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
-            END
+        WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN 
+            REGEXP_SUBSTR(o.container, '[^|]+', 1, 3)
     END AS APPLIB
 FROM your_table_name o;
+
+
+
 
 
 
