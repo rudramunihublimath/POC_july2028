@@ -2,7 +2,8 @@
 
 Column name are "BROKER" ,"EG" ,"APPLIB"
 
-sample input data in Database as "Container" column is  : 
+sample input data in Database as "o.container" column is  : 
+QMGR1
 Broker1|EG1
 Broker2|xyz|APP1
 GBBRK|lmnEG2|AP2|LIB1
@@ -15,8 +16,9 @@ Broker1  , EG1		,
 Broker2  , xyz		,  APP1
 GBBRK    , lmnEG2	,  AP2|LIB1
 UBBRK    , ktEG3	,  LbI2
+QMGR1	,			,		
 
-Write Oracle SQL Query to get data as per output format  ??
+Write Oracle SQL Query to get data as per output format  
 
 ------
 
@@ -91,22 +93,39 @@ SELECT
 FROM your_table_name;
 
 -------
-
 SELECT
     CASE
-        WHEN REGEXP_LIKE(Container, '^[^|]+') THEN REGEXP_SUBSTR(Container, '^[^|]+')
-        ELSE NULL
+        WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
+        ELSE o.container
     END AS "BROKER",
     CASE
-        WHEN REGEXP_LIKE(Container, '\|([^|]+)') THEN REGEXP_SUBSTR(Container, '\|([^|]+)', 1, 1, NULL, 1)
+        WHEN REGEXP_COUNT(o.container, '\|') >= 1 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
         ELSE NULL
     END AS "EG",
     CASE
-        WHEN REGEXP_LIKE(Container, '\|([^|]+)\|([^|]+)') THEN REGEXP_SUBSTR(Container, '\|([^|]+)\|([^|]+)', 1, 1, NULL, 2)
-        WHEN REGEXP_LIKE(Container, '\|([^|]+)$') THEN REGEXP_SUBSTR(Container, '\|([^|]+)$', 1, 1, NULL, 1)
+        WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
         ELSE NULL
     END AS "APPLIB"
-FROM your_table_name;
+FROM
+    (SELECT 'QMGR1' AS container FROM DUAL
+     UNION ALL
+     SELECT 'Broker1|EG1' AS container FROM DUAL
+     UNION ALL
+     SELECT 'Broker2|xyz|APP1' AS container FROM DUAL
+     UNION ALL
+     SELECT 'GBBRK|lmnEG2|AP2|LIB1' AS container FROM DUAL
+     UNION ALL
+     SELECT 'UBBRK|ktEG3|LbI2' AS container FROM DUAL
+    ) o;
+
+BROKER   | EG     | APPLIB
+--------------------------
+Broker1  | EG1    | 
+Broker2  | xyz    | APP1
+GBBRK    | lmnEG2 | AP2|LIB1
+UBBRK    | ktEG3  | LbI2
+QMGR1    |        | 
+
 
 
 
