@@ -98,6 +98,33 @@ FROM your_table_name o;
 
 
 
+------------
+
+WITH input_data AS (
+    SELECT 'QMGR1' AS container FROM dual UNION ALL
+    SELECT 'QMGR2' AS container FROM dual UNION ALL
+    SELECT 'Broker1BRK|PUNE' AS container FROM dual UNION ALL
+    SELECT 'Broker2BRK|xyz|APP1' AS container FROM dual UNION ALL
+    SELECT 'GBQBRK|lmnEG2|AP2|LIB1' AS container FROM dual UNION ALL
+    SELECT 'UBPBRK|ktEG3|LbI2' AS container FROM dual
+)
+SELECT
+    CASE
+        WHEN instr(container, '|') > 0 THEN substr(container, 1, instr(container, '|') - 1)
+        ELSE container
+    END AS "BROKER",
+    CASE
+        WHEN instr(container, '|', 1, 1) > 0 THEN substr(container, instr(container, '|', 1, 1) + 1,
+                                                             instr(container, '|', 1, 2) - instr(container, '|', 1, 1) - 1)
+        END AS "EG",
+    CASE
+        WHEN instr(container, '|', 1, 2) > 0 THEN substr(container, instr(container, '|', 1, 2) + 1,
+                                                             instr(container, '|', 1, 3) - instr(container, '|', 1, 2) - 1)
+        END AS "APPLIB"
+FROM
+    input_data;
+
+
 
 
 
