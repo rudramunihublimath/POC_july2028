@@ -102,10 +102,7 @@ SELECT
         WHEN REGEXP_COUNT(o.container, '\|') >= 1 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
         ELSE NULL
     END AS "EG",
-    CASE
-        WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
-        ELSE NULL
-    END AS "APPLIB"
+    NVL(REGEXP_SUBSTR(o.container, '\|([^|]+)$', 1, 1, NULL, 1), NULL) AS "APPLIB"
 FROM
     (SELECT 'QMGR1' AS container FROM DUAL
      UNION ALL
@@ -117,6 +114,7 @@ FROM
      UNION ALL
      SELECT 'UBBRK|ktEG3|LbI2' AS container FROM DUAL
     ) o;
+
 
 BROKER   | EG     | APPLIB
 --------------------------
