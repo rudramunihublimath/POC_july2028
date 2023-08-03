@@ -40,3 +40,17 @@ UBBRK    | ktEG3  | LbI2
 
 -------------
 
+SELECT
+    CASE
+        WHEN INSTR(Container, '|') > 0 THEN SUBSTR(Container, 1, INSTR(Container, '|') - 1)
+        ELSE Container
+    END AS "BROKER",
+    CASE
+        WHEN INSTR(Container, '|', 1, 1) > 0 AND INSTR(Container, '|', 1, 2) > 0 THEN SUBSTR(Container, INSTR(Container, '|', 1, 1) + 1, INSTR(Container, '|', 1, 2) - INSTR(Container, '|', 1, 1) - 1)
+        ELSE NULL
+    END AS "EG",
+    CASE
+        WHEN INSTR(Container, '|', 1, 2) > 0 THEN SUBSTR(Container, INSTR(Container, '|', 1, 2) + 1)
+        ELSE NULL
+    END AS "APPLIB"
+FROM your_table_name;
