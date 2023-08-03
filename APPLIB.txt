@@ -6,9 +6,9 @@ sample input data in Database as "o.container" column is  :
 QMGR1
 QMGR2
 Broker1|EG1
-Broker2|xyz   |APP1
-GBBRK  |lmnEG2|AP2  |LIB1
-UBBRK  |ktEG3 |LbI2
+Broker2|xyz|APP1
+GBBRK|lmnEG2|AP2|LIB1
+UBBRK|ktEG3|LbI2
 
 
 Output >>
@@ -25,19 +25,21 @@ Write Oracle Query to get data as per output format
 
 ------
 
-SELECT 
-  CASE
-    WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|') - 1)
-    ELSE o.container
-  END AS "BROKER",
-  CASE
-    WHEN REGEXP_LIKE(o.container, '\|[A-Za-z0-9]+') THEN REGEXP_SUBSTR(o.container, '\|([^|]+)')
-    ELSE NULL
-  END AS "EG",
-  CASE
-    WHEN REGEXP_COUNT(o.container, '\|') = 2 THEN REGEXP_SUBSTR(o.container, '\|([^|]+)\|([^|]+)')
-    WHEN REGEXP_COUNT(o.container, '\|') = 1 THEN REGEXP_SUBSTR(o.container, '\|([^|]+)')
-    ELSE NULL
-  END AS "APPLIB" ,
+SELECT
+    CASE 
+        WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
+        ELSE o.container
+    END AS BROKER,
+    CASE 
+        WHEN INSTR(o.container, '|', 1, 1) > 0 AND INSTR(o.container, '|', 1, 2) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+        WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
+        ELSE NULL
+    END AS EG,
+    CASE 
+        WHEN INSTR(o.container, '|', 1, 2) > 0 AND INSTR(o.container, '|', 1, 3) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1, INSTR(o.container, '|', 1, 3) - INSTR(o.container, '|', 1, 2) - 1)
+        WHEN INSTR(o.container, '|', 1, 2) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
+        ELSE NULL
+    END AS APPLIB
 FROM your_table_name o;
+
 
