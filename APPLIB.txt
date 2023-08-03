@@ -19,27 +19,26 @@ QMGR1	    ,			,
 QMGR2	    ,			,		
 
 Write Oracle Query to get data as per output format  
-EG can have 1 or more | in data 
-APPLIB can have 2 or more | in data 
+EG can have exact one or more than one | in input
+APPLIB can have two or more | in input
 
 ------
 
 SELECT
-    CASE
-        WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|') - 1)
-        ELSE o.container
-    END AS "BROKER",
-    CASE
-        WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
-        ELSE NULL
-    END AS "EG",
-    CASE
-        WHEN REGEXP_COUNT(o.container, '\|') >= 3 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
-        WHEN REGEXP_COUNT(o.container, '\|') = 2 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
-        ELSE NULL
-    END AS "APPLIB"
-FROM
-    your_table_name o;
+  CASE
+    WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|') - 1)
+    ELSE o.container
+  END AS "BROKER",
+  CASE
+    WHEN REGEXP_COUNT(o.container, '\|') >= 1 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+    ELSE NULL
+  END AS "EG",
+  CASE
+    WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1, LENGTH(o.container) - INSTR(o.container, '|', 1, 2))
+    ELSE NULL
+  END AS "APPLIB"
+FROM your_table_name o;
+
 
 
 
