@@ -54,3 +54,26 @@ SELECT
         ELSE NULL
     END AS "APPLIB"
 FROM your_table_name;
+
+-------
+
+SELECT
+    BrokerValue AS "BROKER",
+    EGValue AS "EG",
+    AppLibValue AS "APPLIB"
+FROM (
+    SELECT
+        CASE
+            WHEN INSTR(Container, '|') > 0 THEN SUBSTR(Container, 1, INSTR(Container, '|') - 1)
+            ELSE Container
+        END AS BrokerValue,
+        CASE
+            WHEN INSTR(Container, '|', 1, 1) > 0 AND INSTR(Container, '|', 1, 2) > 0 THEN SUBSTR(Container, INSTR(Container, '|', 1, 1) + 1, INSTR(Container, '|', 1, 2) - INSTR(Container, '|', 1, 1) - 1)
+            ELSE NULL
+        END AS EGValue,
+        CASE
+            WHEN INSTR(Container, '|', 1, 2) > 0 THEN SUBSTR(Container, INSTR(Container, '|', 1, 2) + 1)
+            ELSE NULL
+        END AS AppLibValue
+    FROM your_table_name
+) subquery;
