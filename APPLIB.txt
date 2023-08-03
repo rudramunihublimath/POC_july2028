@@ -95,23 +95,17 @@ FROM your_table_name;
 -------
 -------
 -------
-
 SELECT
     CASE
         WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
         ELSE o.container
     END AS "BROKER",
     CASE
-        WHEN INSTR(o.container, '|', 1, 1) > 0 THEN
-            CASE
-                WHEN INSTR(o.container, '|', 1, 2) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
-                ELSE SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
-            END
-        ELSE NULL
+        WHEN INSTR(o.container, '|', 1, 1) > 0 AND INSTR(o.container, '|', 1, 2) > 0 THEN
+            SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
     END AS "EG",
     CASE
         WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
-        ELSE NULL
     END AS "APPLIB"
 FROM
     (SELECT 'QMGR1' AS container FROM DUAL
@@ -124,6 +118,7 @@ FROM
      UNION ALL
      SELECT 'UBBRK|ktEG3|LbI2' AS container FROM DUAL
     ) o;
+
 
 
 
