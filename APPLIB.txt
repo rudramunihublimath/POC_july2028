@@ -117,7 +117,7 @@ SELECT
     END AS "EG",
     CASE
         WHEN INSTR(o.container, 'EG') > 0 THEN
-            SUBSTR(o.container, INSTR(o.container, 'EG') + 2)
+            SUBSTR(o.container, INSTR(o.container, 'EG') + LENGTH('EG') + 1)
         ELSE
             NULL
     END AS "APPLIB"
