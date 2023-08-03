@@ -106,7 +106,7 @@ SELECT
         ELSE NULL
     END AS "EG",
     CASE
-        WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN REGEXP_SUBSTR(o.container, '\|([^|]+)$', 1, 1, NULL, 1)
+        WHEN REGEXP_LIKE(o.container, '^.+\|[^|]+$') THEN REGEXP_SUBSTR(o.container, '[^|]+$', 1, 1)
         ELSE NULL
     END AS "APPLIB"
 FROM
@@ -120,6 +120,7 @@ FROM
      UNION ALL
      SELECT 'UBBRK|ktEG3|LbI2' AS container FROM DUAL
     ) o;
+
 
 
 
