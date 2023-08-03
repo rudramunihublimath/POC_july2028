@@ -103,9 +103,11 @@ SELECT
     END AS "EG",
     CASE
         WHEN REGEXP_LIKE(Container, '\|([^|]+)\|([^|]+)') THEN REGEXP_SUBSTR(Container, '\|([^|]+)\|([^|]+)', 1, 1, NULL, 2)
+        WHEN REGEXP_LIKE(Container, '\|([^|]+)$') THEN REGEXP_SUBSTR(Container, '\|([^|]+)$', 1, 1, NULL, 1)
         ELSE NULL
     END AS "APPLIB"
 FROM your_table_name;
+
 
 
 ----------
