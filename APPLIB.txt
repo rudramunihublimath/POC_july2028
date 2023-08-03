@@ -2,7 +2,7 @@
 
 
 
-sample input data in Database as "o.container" column is  : 
+sample input data in Database as o.container column is  : 
 QMGR1
 QMGR2
 Broker1BRK|PUNE
@@ -21,26 +21,26 @@ UBPBRK      , ktEG3	    ,  LbI2
 QMGR1	    ,			,		
 QMGR2	    ,			,		
 
-Note: of "BROKER" has value ending with 'BRK' then only APPLIB value will be there else null
 Write Oracle Query to get data as per output format  
 
 ------
 
 SELECT
     CASE
-        WHEN INSTR("o.container", 'BRK', -1) = LENGTH("o.container") - 2 THEN SUBSTR("o.container", 1, INSTR("o.container", 'BRK', -1) - 1)
-        ELSE "o.container"
+        WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|') - 1)
+        ELSE o.container
     END AS "BROKER",
     CASE
-        WHEN INSTR("o.container", 'BRK', -1) = LENGTH("o.container") - 2 THEN SUBSTR("o.container", INSTR("o.container", '|', 1, 2) + 1, INSTR("o.container", '|', 1, 3) - INSTR("o.container", '|', 1, 2) - 1)
+        WHEN REGEXP_COUNT(o.container, '\|') >= 1 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
         ELSE NULL
     END AS "EG",
     CASE
-        WHEN INSTR("o.container", 'BRK', -1) = LENGTH("o.container") - 2 THEN SUBSTR("o.container", INSTR("o.container", '|', 1, 3) + 1)
+        WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1, INSTR(o.container, '|', 1, 3) - INSTR(o.container, '|', 1, 2) - 1)
         ELSE NULL
     END AS "APPLIB"
 FROM
-    your_table_name;
+    your_table_name o;
+
 
 
 
