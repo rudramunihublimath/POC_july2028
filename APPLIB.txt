@@ -27,7 +27,7 @@ if length of arr after split is 3 or more then it has Broker and EG , APPLIB val
 
 SELECT
   CASE
-    WHEN INSTR(o.container, '|', 1, 2) = 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|') - 1)
+    WHEN INSTR(o.container, '|', 1, 2) = 0 THEN o.container
     ELSE SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 2) - 1)
   END AS "BROKER",
   CASE
@@ -45,6 +45,7 @@ SELECT
                 END)
   END AS "APPLIB"
 FROM your_table_name o;
+
 
 
 
