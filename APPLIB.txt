@@ -101,6 +101,36 @@ FROM
 
 
 
+----------- 55
+SELECT
+    CASE
+        WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
+        ELSE o.container
+    END AS "BROKER",
+    CASE
+        WHEN INSTR(o.container, '|', 1, 1) > 0 AND INSTR(o.container, '|', 1, 2) > 0 THEN
+            SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+        WHEN INSTR(o.container, '|', 1, 1) > 0 AND INSTR(o.container, '|', 1, 2) = 0 THEN
+            SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
+        ELSE
+            NULL
+    END AS "EG",
+    CASE
+        WHEN INSTR(o.container, 'EG') > 0 THEN
+            SUBSTR(o.container, INSTR(o.container, 'EG') + 2)
+        ELSE
+            NULL
+    END AS "APPLIB"
+FROM
+    (
+        SELECT
+            CASE
+                WHEN INSTR(container, '|', 1, 1) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 1) + 1)
+                ELSE container
+            END AS container
+        FROM
+            your_table_name
+    ) o;
 
 
 
