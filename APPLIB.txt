@@ -93,6 +93,9 @@ SELECT
 FROM your_table_name;
 
 -------
+-------
+-------
+
 SELECT
     CASE
         WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
@@ -102,7 +105,10 @@ SELECT
         WHEN REGEXP_COUNT(o.container, '\|') >= 1 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
         ELSE NULL
     END AS "EG",
-    NVL(REGEXP_SUBSTR(o.container, '\|([^|]+)$', 1, 1, NULL, 1), NULL) AS "APPLIB"
+    CASE
+        WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN REGEXP_SUBSTR(o.container, '\|([^|]+)$', 1, 1, NULL, 1)
+        ELSE NULL
+    END AS "APPLIB"
 FROM
     (SELECT 'QMGR1' AS container FROM DUAL
      UNION ALL
@@ -114,6 +120,8 @@ FROM
      UNION ALL
      SELECT 'UBBRK|ktEG3|LbI2' AS container FROM DUAL
     ) o;
+
+
 
 
 BROKER   | EG     | APPLIB
