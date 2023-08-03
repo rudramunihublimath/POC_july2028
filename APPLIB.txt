@@ -77,3 +77,15 @@ FROM (
         END AS AppLibValue
     FROM your_table_name
 ) subquery;
+
+
+-------
+
+SELECT
+    SUBSTR(Container, 1, INSTR(Container, '|', 1, 1) - 1) AS "BROKER",
+    SUBSTR(Container, INSTR(Container, '|', 1, 1) + 1, INSTR(Container, '|', 1, 2) - INSTR(Container, '|', 1, 1) - 1) AS "EG",
+    CASE
+        WHEN REGEXP_COUNT(Container, '\|') >= 2 THEN REGEXP_SUBSTR(Container, '[^|]+', 1, 3)
+        ELSE NULL
+    END AS "APPLIB"
+FROM your_table_name;
