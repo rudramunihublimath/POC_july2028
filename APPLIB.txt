@@ -13,6 +13,7 @@ UBBRK  |ktEG3 |LbI2
 
 Output >>
 "BROKER" , "EG"     ,  "APPLIB"
+-------------------------------
 Broker1  , EG1		,  
 Broker2  , xyz		,  APP1
 GBBRK    , lmnEG2	,  AP2|LIB1
@@ -23,8 +24,20 @@ QMGR2	 ,			,
 Write Oracle Query to get data as per output format  
 
 ------
+
 SELECT 
-  REGEXP_SUBSTR(o.container, '^[^|]+') AS "BROKER",
-  REGEXP_SUBSTR(o.container, '\|([^|]+)') AS "EG",
-  REGEXP_SUBSTR(o.container, '\|([^|]+)\|([^|]+)') AS "APPLIB"
+  CASE
+    WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|') - 1)
+    ELSE o.container
+  END AS "BROKER",
+  CASE
+    WHEN REGEXP_LIKE(o.container, '\|[A-Za-z0-9]+') THEN REGEXP_SUBSTR(o.container, '\|([^|]+)')
+    ELSE NULL
+  END AS "EG",
+  CASE
+    WHEN REGEXP_COUNT(o.container, '\|') = 2 THEN REGEXP_SUBSTR(o.container, '\|([^|]+)\|([^|]+)')
+    WHEN REGEXP_COUNT(o.container, '\|') = 1 THEN REGEXP_SUBSTR(o.container, '\|([^|]+)')
+    ELSE NULL
+  END AS "APPLIB" ,
 FROM your_table_name o;
+
