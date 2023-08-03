@@ -97,15 +97,19 @@ FROM your_table_name;
 -------
 SELECT
     CASE
-        WHEN REGEXP_COUNT(o.container, '\|') >= 1 THEN REGEXP_SUBSTR(o.container, '^[^|]+', 1, 1)
+        WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
         ELSE o.container
     END AS "BROKER",
     CASE
-        WHEN REGEXP_COUNT(o.container, '\|') >= 2 THEN REGEXP_SUBSTR(o.container, '\|([^|]+)', 1, 1, NULL, 1)
+        WHEN INSTR(o.container, '|', 1, 1) > 0 THEN
+            CASE
+                WHEN INSTR(o.container, '|', 1, 2) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+                ELSE SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
+            END
         ELSE NULL
     END AS "EG",
     CASE
-        WHEN REGEXP_COUNT(o.container, '\|') >= 3 THEN REGEXP_SUBSTR(o.container, '\|([^|]+)', 1, 2, NULL, 1)
+        WHEN INSTR(o.container, '|', 1, 2) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
         ELSE NULL
     END AS "APPLIB"
 FROM
@@ -117,9 +121,8 @@ FROM
      UNION ALL
      SELECT 'GBBRK|lmnEG2|AP2|LIB1' AS container FROM DUAL
      UNION ALL
-
-
-
+     SELECT 'UBBRK|ktEG3|LbI2' AS container FROM DUAL
+    ) o;
 
 
 
