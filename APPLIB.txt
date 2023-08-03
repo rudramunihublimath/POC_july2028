@@ -89,3 +89,23 @@ SELECT
         ELSE NULL
     END AS "APPLIB"
 FROM your_table_name;
+
+-------
+
+SELECT
+    CASE
+        WHEN REGEXP_LIKE(Container, '^[^|]+') THEN REGEXP_SUBSTR(Container, '^[^|]+')
+        ELSE NULL
+    END AS "BROKER",
+    CASE
+        WHEN REGEXP_LIKE(Container, '\|([^|]+)') THEN REGEXP_SUBSTR(Container, '\|([^|]+)', 1, 1, NULL, 1)
+        ELSE NULL
+    END AS "EG",
+    CASE
+        WHEN REGEXP_LIKE(Container, '\|([^|]+)\|([^|]+)') THEN REGEXP_SUBSTR(Container, '\|([^|]+)\|([^|]+)', 1, 1, NULL, 2)
+        ELSE NULL
+    END AS "APPLIB"
+FROM your_table_name;
+
+
+----------
