@@ -16,20 +16,27 @@ Broker2  , xyz		,  APP1
 GBBRK    , lmnEG2	,  AP2|LIB1
 UBBRK    , ktEG3	,  LbI2
 
-Write SQL Query to get data as per output format  ??
+Write Oracle SQL Query to get data as per output format  ??
 
 ------
 
-SELECT 
-    SUBSTR(Container, 1, INSTR(Container, '|') - 1) AS BROKER,
-    SUBSTR(Container, INSTR(Container, '|') + 1, INSTR(Container, '|', 1, 2) - INSTR(Container, '|', 1, 1) - 1) AS EG,
-    CASE 
-        WHEN REGEXP_COUNT(Container, '\|') >= 2
-        THEN SUBSTR(Container, INSTR(Container, '|', -1, 1) + 1)
+SELECT
+    SUBSTR(Container, 1, INSTR(Container, '|') - 1) AS "BROKER",
+    SUBSTR(Container, INSTR(Container, '|', 1, 1) + 1, INSTR(Container, '|', 1, 2) - INSTR(Container, '|', 1, 1) - 1) AS "EG",
+    CASE
+        WHEN INSTR(Container, '|', 1, 2) > 0 THEN SUBSTR(Container, INSTR(Container, '|', 1, 2) + 1)
         ELSE NULL
-    END AS APPLIB
-FROM YourTableName;
+    END AS "APPLIB"
+FROM your_table_name;
 
+
+BROKER   | EG     | APPLIB
+--------------------------
+Broker1  | EG1    | 
+Broker2  | xyz    | APP1
+GBBRK    | lmnEG2 | AP2|LIB1
+UBBRK    | ktEG3  | LbI2
 
 
 -------------
+
