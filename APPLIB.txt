@@ -116,8 +116,8 @@ SELECT
             NULL
     END AS "EG",
     CASE
-        WHEN INSTR(o.container, 'EG') > 0 AND LENGTH(o.container) > INSTR(o.container, 'EG') + LENGTH('EG') THEN
-            SUBSTR(o.container, INSTR(o.container, 'EG') + LENGTH('EG') + 1)
+        WHEN REGEXP_SUBSTR(o.container, '(EG)([^|]*)', 1, 1, NULL, 2) IS NOT NULL THEN
+            REGEXP_SUBSTR(o.container, '(EG)([^|]*)', 1, 1, NULL, 2)
         ELSE
             NULL
     END AS "APPLIB"
