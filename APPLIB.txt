@@ -116,7 +116,7 @@ SELECT
             NULL
     END AS "EG",
     CASE
-        WHEN INSTR(o.container, 'EG') > 0 THEN
+        WHEN INSTR(o.container, 'EG') > 0 AND LENGTH(o.container) > INSTR(o.container, 'EG') + LENGTH('EG') THEN
             SUBSTR(o.container, INSTR(o.container, 'EG') + LENGTH('EG') + 1)
         ELSE
             NULL
@@ -131,6 +131,7 @@ FROM
         FROM
             your_table_name
     ) o;
+
 
 
 
