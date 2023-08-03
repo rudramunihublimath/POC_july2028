@@ -101,7 +101,7 @@ SELECT
         ELSE o.container
     END AS "BROKER",
     CASE
-        WHEN REGEXP_COUNT(o.container, '\|') >= 1 THEN REGEXP_SUBSTR(o.container, '[^|]+', 1, 2)
+        WHEN REGEXP_COUNT(o.container, '\|') >= 1 AND REGEXP_COUNT(o.container, '\|') < 2 THEN REGEXP_SUBSTR(o.container, '[^|]+', 1, 2)
         ELSE NULL
     END AS "EG",
     CASE
@@ -119,6 +119,7 @@ FROM
      UNION ALL
      SELECT 'UBBRK|ktEG3|LbI2' AS container FROM DUAL
     ) o;
+
 
 
 
