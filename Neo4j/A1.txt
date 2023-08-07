@@ -1,0 +1,4 @@
+Q1) Java Neo4j Graph database .. What is Merge and Merge SET ?
+Ans : 
+
+ 
