@@ -53,6 +53,8 @@ SELECT
 FROM your_table_name;
 
 -------2)
+
+
 SELECT
   CASE
     WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
@@ -83,6 +85,7 @@ SELECT
     ELSE NULL
   END AS lib
 FROM o.o.container;
+
 
 
 
