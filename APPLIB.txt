@@ -80,18 +80,22 @@ SELECT
         ELSE container
     END AS BROKER,
     CASE
-        WHEN INSTR(container, '|', 1, 1) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 1) + 1,
-              CASE
-                 WHEN INSTR(container, '|', 1, 2) > 0 THEN INSTR(container, '|', 1, 2) - INSTR(container, '|', 1, 1) - 1
-                 ELSE LENGTH(container) - INSTR(container, '|', 1, 1)
-              END)
+        WHEN INSTR(container, '|', 1, 1) > 0 THEN 
+            CASE
+                WHEN INSTR(container, '|', 1, 2) > 0 THEN 
+                    SUBSTR(container, INSTR(container, '|', 1, 1) + 1, INSTR(container, '|', 1, 2) - INSTR(container, '|', 1, 1) - 1)
+                ELSE
+                    SUBSTR(container, INSTR(container, '|', 1, 1) + 1)
+            END
         ELSE NULL
     END AS EG,
     CASE
         WHEN INSTR(container, '|', 1, 2) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 2) + 1)
+        WHEN INSTR(container, '|', 1, 1) > 0 THEN NULL
         ELSE NULL
     END AS APPLIB
 FROM your_table_name;
+
 
 
 
