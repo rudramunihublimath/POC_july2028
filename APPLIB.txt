@@ -32,7 +32,8 @@ Existing query is supporting only Broker and EG like this but we want to supppor
 
 
 ------
-
+Modify this query to support Broker,EG when APPLIB is not present
+ 
 SELECT
     CASE
         WHEN INSTR(container, '|') > 0 THEN SUBSTR(container, 1, INSTR(container, '|') - 1)
@@ -75,22 +76,23 @@ FROM your_table_name o;
 
 SELECT
     CASE
-        WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|') - 1)
-        ELSE o.container
+        WHEN INSTR(container, '|', 1, 1) > 0 THEN SUBSTR(container, 1, INSTR(container, '|', 1, 1) - 1)
+        ELSE container
     END AS BROKER,
     CASE
-        WHEN INSTR(o.container, '|', 1, 2) > 0 THEN 
-            CASE
-                WHEN INSTR(o.container, '|', 1, 3) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1, INSTR(o.container, '|', 1, 3) - INSTR(o.container, '|', 1, 2) - 1)
-                ELSE SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
-            END
+        WHEN INSTR(container, '|', 1, 1) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 1) + 1,
+              CASE
+                 WHEN INSTR(container, '|', 1, 2) > 0 THEN INSTR(container, '|', 1, 2) - INSTR(container, '|', 1, 1) - 1
+                 ELSE LENGTH(container) - INSTR(container, '|', 1, 1)
+              END)
         ELSE NULL
     END AS EG,
     CASE
-        WHEN INSTR(o.container, '|', 1, 3) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 3) + 1)
+        WHEN INSTR(container, '|', 1, 2) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 2) + 1)
         ELSE NULL
     END AS APPLIB
-FROM your_table_name o;
+FROM your_table_name;
+
 
 
 
