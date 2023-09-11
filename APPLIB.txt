@@ -22,6 +22,14 @@ Write Oracle Query to get data as per output format
 split with |, if length of arr after split is 2 then it has Broker and EG value 
 if length of arr after split is 3 or more then it has Broker and EG , APPLIB value 
 
+Existing query is supporting only Broker and EG like this but we want to suppport for APPLIB
+	CASE
+        WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, 0, INSTR(o.container, '|') - 1)
+        ELSE o.container END AS BROKER,
+    CASE
+        WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, INSTR(container, '|')+1), 
+        ELSE NULL END AS EG,
+
 
 ------
 
@@ -39,6 +47,30 @@ SELECT
         ELSE NULL
     END AS APPLIB
 FROM your_table_name;
+
+-------2)
+
+
+SELECT
+    CASE
+        WHEN INSTR(o.container, '|') > 0 AND LENGTH(REGEXP_REPLACE(o.container, '[^|]+', '')) = 1
+            THEN SUBSTR(o.container, 0, INSTR(o.container, '|') - 1)
+        ELSE NULL
+    END AS BROKER,
+    CASE
+        WHEN INSTR(o.container, '|') > 0 AND LENGTH(REGEXP_REPLACE(o.container, '[^|]+', '')) = 1
+            THEN SUBSTR(o.container, INSTR(o.container, '|') + 1)
+        ELSE NULL
+    END AS EG,
+    CASE
+        WHEN INSTR(o.container, '|') > 0 AND LENGTH(REGEXP_REPLACE(o.container, '[^|]+', '')) >= 2
+            THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
+        ELSE NULL
+    END AS APPLIB
+FROM your_table_name o;
+
+---
+
 
 
 
