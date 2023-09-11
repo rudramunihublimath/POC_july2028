@@ -3,16 +3,17 @@ Table : o.container
 sample container data in Database is  -
 First line is heading.
 
-container,,,
-GBPCMN50,,,
-GBPFBI01,,,
-Broker1BRK|PUNE,,,
-Broker2BRK|XYZ|APP1,,,
-GBQBRK|lmnEG2|AP2|LIB1,,,
-UBPBRK|ktEG3|LbI2,,,		
+Input as single column >>
+container
+GBPCMN50
+GBPFBI01
+Broker1BRK|PUNE
+Broker2BRK|XYZ|APP1
+GBQBRK|lmnEG2|AP2|LIB1
+UBPBRK|ktEG3|LbI2	
 
 
-Output >>
+Output as CSV >>
 container,eg,app,lib
 Broker1BRK,PUNE,,
 Broker2BRK,xyz,APP1,
@@ -51,28 +52,34 @@ SELECT
     END AS APPLIB
 FROM your_table_name;
 
--------
+-------2)
 
 
 SELECT
   CASE
-    WHEN INSTR(Container, '|') > 0 THEN SUBSTR(Container, 1, INSTR(Container, '|') - 1)
-    ELSE Container
+    WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
+    ELSE o.container
   END AS container,
   CASE
-    WHEN INSTR(Container, '|', 1, 2) > 0 THEN SUBSTR(Container, INSTR(Container, '|', 1, 2) + 1, INSTR(Container, '|', 1, 3) - INSTR(Container, '|', 1, 2) - 1)
-    ELSE NULL
+    WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+    ELSE CASE
+      WHEN INSTR(o.container, '|', 1, 2) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1, INSTR(o.container, '|', 1, 3) - INSTR(o.container, '|', 1, 2) - 1)
+      ELSE CASE
+        WHEN INSTR(o.container, '|', 1, 3) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 3) + 1, INSTR(o.container, '|', 1, 4) - INSTR(o.container, '|', 1, 3) - 1)
+        ELSE NULL
+      END
+    END
   END AS eg,
   CASE
-    WHEN INSTR(Container, '|', 1, 3) > 0 THEN SUBSTR(Container, INSTR(Container, '|', 1, 3) + 1, INSTR(Container, '|', 1, 4) - INSTR(Container, '|', 1, 3) - 1)
+    WHEN INSTR(o.container, '|', 1, 3) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 3) + 1, INSTR(o.container, '|', 1, 4) - INSTR(o.container, '|', 1, 3) - 1)
     ELSE NULL
   END AS app,
   CASE
-    WHEN INSTR(Container, '|', 1, 4) > 0 THEN SUBSTR(Container, INSTR(Container, '|', 1, 4) + 1)
+    WHEN INSTR(o.container, '|', 1, 4) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 4) + 1)
     ELSE NULL
   END AS lib
-FROM o.container
-ORDER BY container;
+FROM o.container;
+
 
 
 
