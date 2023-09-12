@@ -216,3 +216,22 @@ FROM table;
 
 
 -------
+SELECT
+  CASE
+    WHEN INSTR(container, '|') > 0 THEN SUBSTR(container, 1, INSTR(container, '|') - 1)
+    ELSE container
+  END AS broker,
+  CASE
+    WHEN REGEXP_SUBSTR(container, '[^|]+', 1, 1) IS NOT NULL THEN
+      REGEXP_SUBSTR(container, '[^|]+', 1, 1)
+    ELSE NULL
+  END AS EG,
+  CASE
+    WHEN REGEXP_SUBSTR(container, '[^|]+', 1, 2) IS NOT NULL THEN
+      REGEXP_SUBSTR(container, '[^|]+', 1, 2)
+    ELSE NULL
+  END AS applib
+FROM table;
+
+
+----------
