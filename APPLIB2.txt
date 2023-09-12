@@ -60,4 +60,22 @@ SELECT
   END AS EG
 FROM table;
 
- 
+---------
+
+SELECT
+  o.container AS broker,
+  CASE
+    WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
+    ELSE o.container
+  END AS container,
+  CASE
+    WHEN INSTR(o.container, '|', 1, 1) > 0 AND INSTR(o.container, '|', 1, 2) > 0 THEN
+      SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+    WHEN INSTR(o.container, '|', 1, 1) > 0 THEN
+      SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
+    ELSE NULL
+  END AS EG
+FROM table;
+
+
+--------- 
