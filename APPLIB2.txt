@@ -190,3 +190,25 @@ FROM table;
 
 
 ---
+
+SELECT
+  CASE
+    WHEN CHARINDEX('|', container) > 0 THEN SUBSTRING(container, 1, CHARINDEX('|', container) - 1)
+    ELSE container
+  END AS broker,
+  CASE
+    WHEN CHARINDEX('|', container, 1, 1) > 0 AND CHARINDEX('|', container, 1, 2) > 0 THEN
+      SUBSTRING(container, CHARINDEX('|', container, 1, 1) + 1, CHARINDEX('|', container, 1, 2) - CHARINDEX('|', container, 1, 1) - 1)
+    WHEN CHARINDEX('|', container, 1, 1) > 0 THEN
+      SUBSTRING(container, CHARINDEX('|', container, 1, 1) + 1)
+    ELSE NULL
+  END AS EG,
+  CASE
+    WHEN CHARINDEX('|', container, 1, 2) > 0 THEN
+      SUBSTRING(container, CHARINDEX('|', container, 1, 2) + 1)
+    ELSE NULL
+  END AS applib
+FROM table;
+
+
+-------
