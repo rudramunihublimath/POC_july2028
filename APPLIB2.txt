@@ -142,3 +142,26 @@ SELECT
 FROM table;
 
 
+----------
+
+SELECT
+  CASE
+    WHEN INSTR(o.container, '|', 1, 1) > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|', 1, 1) - 1)
+    ELSE o.container
+  END AS container,
+  CASE
+    WHEN INSTR(o.container, '|', 1, 2) > 0 THEN
+      SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+    WHEN INSTR(o.container, '|', 1, 1) > 0 THEN
+      SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
+    ELSE NULL
+  END AS EG,
+  CASE
+    WHEN INSTR(o.container, '|', 1, 3) > 0 THEN 
+      SUBSTR(o.container, INSTR(o.container, '|', 1, 2) + 1)
+    ELSE NULL
+  END AS applib
+FROM table;
+
+
+-------
