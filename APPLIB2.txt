@@ -148,3 +148,19 @@ FROM table;
 
 
 -------
+
+SELECT
+  SUBSTR(container, 1, CASE WHEN INSTR(container, '|') > 0 THEN INSTR(container, '|') - 1 ELSE LENGTH(container) END) AS broker,
+  CASE
+    WHEN INSTR(container, '|', 1, 1) > 0 AND INSTR(container, '|', 1, 2) > 0 THEN
+      SUBSTR(container, INSTR(container, '|', 1, 1) + 1, INSTR(container, '|', 1, 2) - INSTR(container, '|', 1, 1) - 1)
+    WHEN INSTR(container, '|', 1, 1) > 0 THEN
+      SUBSTR(container, INSTR(container, '|', 1, 1) + 1)
+    ELSE NULL
+  END AS EG,
+  CASE
+    WHEN INSTR(container, '|', 1, 2) > 0 THEN
+      SUBSTR(container, INSTR(container, '|', 1, 2) + 1)
+    ELSE NULL
+  END AS applib
+FROM table;
