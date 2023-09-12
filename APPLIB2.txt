@@ -124,25 +124,7 @@ SELECT
 FROM table;
 
 
--------
-
-SELECT
-  CASE
-    WHEN REGEXP_REPLACE(o.container, '([^|]+)\\|([^|]+)\\|([^|]+)\\|(.+)', '\\1') IS NOT NULL THEN REGEXP_REPLACE(o.container, '([^|]+)\\|([^|]+)\\|([^|]+)\\|(.+)', '\\1')
-    ELSE o.container
-  END AS container,
-  CASE
-    WHEN REGEXP_REPLACE(o.container, '([^|]+)\\|([^|]+)\\|([^|]+)\\|(.+)', '\\2') IS NOT NULL THEN REGEXP_REPLACE(o.container, '([^|]+)\\|([^|]+)\\|([^|]+)\\|(.+)', '\\2')
-    ELSE NULL
-  END AS EG,
-  CASE
-    WHEN REGEXP_REPLACE(o.container, '([^|]+)\\|([^|]+)\\|([^|]+)\\|(.+)', '\\3') IS NOT NULL THEN REGEXP_REPLACE(o.container, '([^|]+)\\|([^|]+)\\|([^|]+)\\|(.+)', '\\3')
-    ELSE NULL
-  END AS applib
-FROM table;
-
-
-----------
+----------------
 
 SELECT
   CASE
@@ -151,7 +133,8 @@ SELECT
   END AS container,
   CASE
     WHEN INSTR(o.container, '|', 1, 2) > 0 THEN
-      SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+      SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1,
+             INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
     WHEN INSTR(o.container, '|', 1, 1) > 0 THEN
       SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
     ELSE NULL
