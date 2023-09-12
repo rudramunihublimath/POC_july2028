@@ -1,0 +1,63 @@
+
+
+
+select o.container as broker
+case when instr(o.container,'|')>0 then substr(o.container,1,INSTR(o.container,'|')-1) else o.container end as container,
+case when instr(o.container,'|',1,1)>0 then 
+ case 
+    when INSTR(o.container,'|',1,2)>0 then substr(o.container,INSTR(o.container,'|',1,1)+1) ,
+    INSTR(o.container,'|',1,2)-INSTR(o.container,'|',1,1)-1
+ else substr(o.container,INSTR(o.container,'|',1,1)+1) end else null end as EG
+from table; 
+ 
+SELECT
+  o.container AS broker,
+  CASE
+    WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|') - 1)
+    ELSE o.container
+  END AS container,
+  CASE
+    WHEN INSTR(o.container, '|', 1, 1) > 0 THEN
+      CASE
+        WHEN INSTR(o.container, '|', 1, 2) > 0 THEN SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+        ELSE SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
+      END
+  END AS EG
+FROM table;
+
+
+---final working 
+
+SELECT
+  o.container AS broker,
+  CASE
+    WHEN INSTR(o.container, '|') > 0 THEN SUBSTR(o.container, 1, INSTR(o.container, '|') - 1)
+    ELSE o.container
+  END AS container,
+  CASE
+    WHEN INSTR(o.container, '|', 1, 1) > 0 AND INSTR(o.container, '|', 1, 2) > 0 THEN
+      SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1, INSTR(o.container, '|', 1, 2) - INSTR(o.container, '|', 1, 1) - 1)
+    WHEN INSTR(o.container, '|', 1, 1) > 0 THEN
+      SUBSTR(o.container, INSTR(o.container, '|', 1, 1) + 1)
+    ELSE NULL
+  END AS EG
+FROM table;
+ 
+----
+
+SELECT
+  o.container AS broker,
+  CASE
+    WHEN POSITION('|' IN o.container) > 0 THEN SUBSTRING(o.container, 1, POSITION('|' IN o.container) - 1)
+    ELSE o.container
+  END AS container,
+  CASE
+    WHEN POSITION('|' IN o.container, 1, 1) > 0 AND POSITION('|' IN o.container, 1, 2) > 0 THEN
+      SUBSTRING(o.container, POSITION('|' IN o.container, 1, 1) + 1, POSITION('|' IN o.container, 1, 2) - POSITION('|' IN o.container, 1, 1) - 1)
+    WHEN POSITION('|' IN o.container, 1, 1) > 0 THEN
+      SUBSTRING(o.container, POSITION('|' IN o.container, 1, 1) + 1)
+    ELSE NULL
+  END AS EG
+FROM table;
+
+ 
