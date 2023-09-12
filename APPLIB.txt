@@ -1,6 +1,6 @@
 Table : o.container
 
-sample container data in Database is  -
+sample o.container data in Database is  -
 First line is heading.
 
 Input as single column >>
@@ -13,16 +13,16 @@ GBQBRK|lmnEG2|AP2|LIB1
 UBPBRK|ktEG3|LbI2	
 
 
-Output as CSV >>
-container,eg,app,lib
-Broker1BRK,PUNE,,
-Broker2BRK,xyz,APP1,
-GBQBRK,lmnEG2,AP2,LIB1
-UBPBRK,ktEG3,LbI2,
-GBPCMN50,,,
-GBPFBI01,,,
+Output  >>
+container		eg		 applib
+Broker1BRK		PUNE
+Broker2BRK		xyz	     APP1
+GBQBRK			lmnEG2	 AP2|LIB1
+UBPBRK			ktEG3	 LbI2
+GBPCMN50			  
+GBPFBI01			  
 
-Write "Oracle" Query to get data as per output format  
+Write "Oracle" Query to get data as per output format.  
 split with |, if length of arr after split is 2 then it has Broker and EG value. 
 
 Existing query is supporting only Broker and EG like this but we want to suppport for APPLIB
@@ -78,8 +78,54 @@ SELECT
 FROM o.o.container;
 
 
+-------- 3)
 
+SELECT
+  CASE
+    WHEN INSTR(container, '|', 1, 1) > 0 THEN SUBSTR(container, 1, INSTR(container, '|', 1, 1) - 1)
+    ELSE container
+  END AS container,
+  CASE
+    WHEN INSTR(container, '|', 1, 1) > 0 THEN
+      CASE
+        WHEN INSTR(container, '|', 1, 2) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 1) + 1, INSTR(container, '|', 1, 2) - INSTR(container, '|', 1, 1) - 1)
+        ELSE SUBSTR(container, INSTR(container, '|', 1, 1) + 1)
+      END
+    ELSE NULL
+  END AS eg,
+  CASE
+    WHEN INSTR(container, '|', 1, 2) > 0 THEN
+      CASE
+        WHEN INSTR(container, '|', 1, 3) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 2) + 1, INSTR(container, '|', 1, 3) - INSTR(container, '|', 1, 2) - 1)
+        ELSE SUBSTR(container, INSTR(container, '|', 1, 2) + 1)
+      END
+    ELSE NULL
+  END AS app,
+  CASE
+    WHEN INSTR(container, '|', 1, 3) > 0 THEN
+      CASE
+        WHEN INSTR(container, '|', 1, 4) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 3) + 1, INSTR(container, '|', 1, 4) - INSTR(container, '|', 1, 3) - 1)
+        ELSE SUBSTR(container, INSTR(container, '|', 1, 3) + 1)
+      END
+    ELSE NULL
+  END AS lib
+FROM o.container;
 
+----------------- TRY This --
+
+SELECT
+  CASE
+    WHEN INSTR(container, '|', 1, 2) > 0 THEN SUBSTR(container, 1, INSTR(container, '|', 1, 2) - 1)
+    ELSE container
+  END AS container,
+  CASE
+    WHEN INSTR(container, '|', 1, 2) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 2) + 1, INSTR(container, '|', 1, 3) - INSTR(container, '|', 1, 2) - 1)
+  END AS eg,
+  CASE
+    WHEN INSTR(container, '|', 1, 3) > 0 THEN SUBSTR(container, INSTR(container, '|', 1, 3) + 1)
+  END AS applib
+FROM o.container
+ORDER BY container;
 
 
 
