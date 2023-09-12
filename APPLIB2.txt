@@ -170,22 +170,23 @@ FROM table;
 
 SELECT
   CASE
-    WHEN LOCATE('|', container) > 0 THEN SUBSTRING(container, 1, LOCATE('|', container) - 1)
+    WHEN INSTR(container, '|') > 0 THEN SUBSTR(container, 1, INSTR(container, '|') - 1)
     ELSE container
   END AS broker,
   CASE
-    WHEN LOCATE('|', container, 1, 1) > 0 AND LOCATE('|', container, 1, 2) > 0 THEN
-      SUBSTRING(container, LOCATE('|', container, 1, 1) + 1, LOCATE('|', container, 1, 2) - LOCATE('|', container, 1, 1) - 1)
-    WHEN LOCATE('|', container, 1, 1) > 0 THEN
-      SUBSTRING(container, LOCATE('|', container, 1, 1) + 1)
+    WHEN INSTR(container, '|', 1, 1) > 0 AND INSTR(container, '|', 1, 2) > 0 THEN
+      SUBSTR(container, INSTR(container, '|', 1, 1) + 1, INSTR(container, '|', 1, 2) - INSTR(container, '|', 1, 1) - 1)
+    WHEN INSTR(container, '|', 1, 1) > 0 THEN
+      SUBSTR(container, INSTR(container, '|', 1, 1) + 1)
     ELSE NULL
   END AS EG,
   CASE
-    WHEN LOCATE('|', container, 1, 2) > 0 THEN
-      SUBSTRING(container, LOCATE('|', container, 1, 2) + 1)
+    WHEN INSTR(container, '|', 1, 2) > 0 THEN
+      SUBSTR(container, INSTR(container, '|', 1, 2) + 1)
     ELSE NULL
   END AS applib
 FROM table;
+
 
 
 ---
